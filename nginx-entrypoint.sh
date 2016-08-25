@@ -1,4 +1,3 @@
 #!/bin/bash
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 erb -T - /nginx.conf.erb > /etc/nginx/nginx.conf
 exec ${@}
