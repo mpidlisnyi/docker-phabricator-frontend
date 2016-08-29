@@ -23,10 +23,24 @@ http {
 
     gzip  on;
 
+    <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
     server {
-      server_name _;
-      listen          80;
-      root        /srv/phabricator/webroot;
+      server_name	_;
+      listen		80;
+      rewrite		^/(.*)$https://$host/$1 permanent;
+    }
+    <%- end -%>
+    server {
+      server_name	_;
+      <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
+      listen			443 ssl;
+      ssl_certificate		<%= ENV['SSL_CERTIFICATE'] %>;
+      ssl_certificate_key	<%= ENV['SSL_CERTIFICATE_KEY'] %>;
+      <%- else -%>
+      listen		80;
+      <%- end -%>
+
+      root		/srv/phabricator/webroot;
 
       location / {
         index index.php;
