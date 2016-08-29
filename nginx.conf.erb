@@ -25,13 +25,13 @@ http {
 
     <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
     server {
-      server_name	_;
+      server_name	<%= ENV['SERVER_NAME'] ? ENV['SERVER_NAME'] : '_' %>;
       listen		80;
       rewrite		^/(.*)$https://$host/$1 permanent;
     }
     <%- end -%>
     server {
-      server_name	_;
+      server_name	<%= ENV['SERVER_NAME'] ? ENV['SERVER_NAME'] : '_' %>;
       <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
       listen			443 ssl;
       ssl_certificate		<%= ENV['SSL_CERTIFICATE'] %>;
