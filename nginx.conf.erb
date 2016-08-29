@@ -71,6 +71,10 @@ http {
         fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
 
         fastcgi_param  REMOTE_ADDR        $remote_addr;
+        <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
+        fastcgi_param  HTTPS              on;
+        fastcgi_param  HTTP_SCHEME        https;
+        <%- end -%>
       }
    }
 
