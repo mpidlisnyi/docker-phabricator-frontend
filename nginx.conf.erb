@@ -23,22 +23,21 @@ http {
 
     gzip  on;
 
-    <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
     server {
       server_name	<%= ENV['SERVER_NAME'] ? ENV['SERVER_NAME'] : '_' %>;
       listen		80;
       rewrite		^/(.*)$ https://$host/$1 permanent;
     }
-    <%- end -%>
     server {
-      server_name	<%= ENV['SERVER_NAME'] ? ENV['SERVER_NAME'] : '_' %>;
-      <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
+      server_name		<%= ENV['SERVER_NAME'] ? ENV['SERVER_NAME'] : '_' %>;
       listen			443 ssl;
-      ssl_certificate		<%= ENV['SSL_CERTIFICATE'] %>;
-      ssl_certificate_key	<%= ENV['SSL_CERTIFICATE_KEY'] %>;
-      <%- else -%>
-      listen		80;
-      <%- end -%>
+      ssl_certificate		<%= ENV['SSL_CERTIFICATE'] ? ENV['SSL_CERTIFICATE'] : '/etc/nginx/custom_cert.pem' %>;
+      ssl_certificate_key	<%= ENV['SSL_CERTIFICATE_KEY'] ? ENV['SSL_CERTIFICATE_KEY'] : '/etc/nginx/custom_cert.key' %>;
+      ssl_protocols		TLSv1.1 TLSv1.2;
 
       root		/srv/phabricator/webroot;
 
@@ -71,10 +70,8 @@ http {
         fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
 
         fastcgi_param  REMOTE_ADDR        $remote_addr;
-        <%- if ENV['SSL_CERTIFICATE'] and ENV['SSL_CERTIFICATE_KEY'] -%>
         fastcgi_param  HTTPS              on;
         fastcgi_param  HTTP_SCHEME        https;
-        <%- end -%>
       }
    }
 

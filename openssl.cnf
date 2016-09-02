@@ -1,0 +1,12 @@
+[req]
+distinguished_name = req_distinguished_name
+prompt             = no
+
+[req_distinguished_name]
+C = US
+ST = Test State
+L = Test Locality
+O = Org Name
+OU = Domain Control Validated
+CN = *.localhost
+emailAddress = root@localhost
